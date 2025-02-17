@@ -197,7 +197,7 @@
     justify-content: center; /* Center the cards */
     gap: 20px; /* Space between cards */
     margin: 5px;
-}
+       }
 
 .card {
     background-color: #fff;
@@ -210,9 +210,114 @@
     flex: 1 1 auto; /* Allow cards to grow and shrink */
      /* Add margin to prevent overflow */
 }
+        #about{
+            display: flex;
+            flex-direction: column;
+        }
+        .f1-about{
+            width: 90%;
+            order: 2;
+        }
+        .f2-about{
+            max-width: 90%;
+            order: 1;
+        }
+
         }
         .social{
             display: flex;
+        }
+
+        .slideshow-container {
+            position: relative;
+            max-width: 88%;
+            margin: auto;
+            overflow: hidden;
+        }
+        .slides {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+        .slide {
+            min-width: 100%;
+            box-sizing: border-box;
+        }
+        .slide img {
+            width: 100%;
+            cursor: pointer;
+        }
+        .fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .fullscreen img {
+            max-width: 90%;
+            max-height: 90%;
+        }
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+        }
+        .nav-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #007BFF;
+            border: none;
+            padding: 10px 25px;
+            cursor: pointer;
+            z-index: 10;
+            color: #ffffff;
+            border-radius: 5px;
+            box-shadow:3px 3px 3px #007bffb0;
+        }
+        .nav-button:hover{
+            box-shadow: 2px 2px 2px #5040db ;
+            transition: cubic-bezier(0.075, 0.82, 0.165, 1);
+        }
+        .prev {
+            left: 10px;
+        }
+        .next {
+            right: 10px;
+        }
+        .image-container {
+            width: 800px; /* Fixed width */
+            height: 400px; /* Fixed height */
+            overflow: hidden;
+        }
+        #about{
+            display: flex;
+        }
+        .f1-about{
+            max-width: 60%;
+            height: 50%;
+        }
+        .f2-about{
+            position: relative;
+            max-width: 350px;
+            max-height: 350px;
+            overflow: hidden; 
+
+            border-radius: 5px;
+            box-shadow: 4px 4px 4px #007bff69;
+            margin: auto;
+        }
+        .f2-about img{
+            width: 100%;
+            height: 100%;
         }
     </style>
 </head>
@@ -242,9 +347,14 @@
     </div>
 
     <div id="about" class="section">
-        <h2>About Me</h2>
-        <img src="photo_2025-02-15_23-49-50.jpg" alt="Profile Image" style="width:210px; height: 210px; border-radius: 50%; margin-bottom: 20px;">
-        <p class="desc">I am a data analyst with expertise in <br> <span class="skill">Excel, Power BI, SQL, Python, Statistics, and VBA</span> . <br> I enjoy turning data into actionable insights.</p>
+        <div class="f1-about">
+            <h2>About Me</h2>
+            <p class="desc">I am a data analyst with expertise in <br> <span class="skill">Excel, Power BI, SQL, Python, Statistics, and VBA</span> . <br> I enjoy turning data into actionable insights.</p>
+            <p style="color: #007BFF; font-weight: bold;">I have expertise in <span style="color: #FFD700;">Power Bi Interactive Dashboard Design</span>, <span style="color: rgb(10, 240, 10);">Cleaning Data in Excel</span>, <span style="color: rgb(202, 58, 202);">Data Exploration and Database Querying with SQL</span></p>
+        </div>
+        <div class="f2-about">
+            <img src="photo_2025-02-15_23-49-50.jpg" alt="Profile Image">
+        </div>
     </div>
 
     <div id="projects" class="section">
@@ -293,6 +403,26 @@
         </div>
     </div>
 
+    <div class="slideshow-container">
+        <h2>Dashboard Show Case</h2>
+        <button class="nav-button prev" id="prev"><i class="fas fa-chevron-left"></i></button>
+        <button class="nav-button next" id="next"><i class="fas fa-chevron-right"></i></button>
+        <div class="slides" id="slides">
+            <div class="slide"><img src="HR.png" alt="Dashboard 1"></div>
+            <div class="slide"><img src="Supermaket.jpg" alt="Dashboard 2"></div>
+            <div class="slide"><img src="photo_2025-02-11_09-56-31.jpg" alt="Dashboard 3"></div>
+            <div class="slide"><img src="03.jpg" alt="Dashboard 4"></div>
+            <div class="slide"><img src="02.jpg" alt="Dashboard 5"></div>
+            <div class="slide"><img src="04.jpg" alt="Dashboard 6"></div>
+            <div class="slide"><img src="05.png" alt="Dashboard 7"></div>
+        </div>
+    </div>
+    
+    <div class="fullscreen" id="fullscreen">
+        <span class="close" id="close">&times;</span>
+        <img id="fullscreenImage" src="" alt="Fullscreen Image">
+    </div>
+
     <div class="footer">
         <p>+237 692607021</p>
         <p>tnababiel@gmail.com</p>
@@ -316,6 +446,66 @@
             const menu = document.querySelector('.menu');
             menu.classList.toggle('active');
         }
+
+        //slide show js
+        let currentIndex = 0;
+    const slides = document.getElementById('slides');
+    const slideCount = document.querySelectorAll('.slide').length;
+    const fullscreen = document.getElementById('fullscreen');
+    const fullscreenImage = document.getElementById('fullscreenImage');
+    const close = document.getElementById('close');
+    const prevButton = document.getElementById('prev');
+    const nextButton = document.getElementById('next');
+
+    function showSlides() {
+        slides .style.transform = 'translateX(' + (-currentIndex * 100) + '%)';
+    }
+
+    function nextSlide() {
+        currentIndex++;
+        if (currentIndex >= slideCount) {
+            currentIndex = 0;
+        }
+        showSlides();
+    }
+
+    function prevSlide() {
+        currentIndex--;
+        if (currentIndex < 0) {
+            currentIndex = slideCount - 1;
+        }
+        showSlides();
+    }
+
+    let slideInterval = setInterval(nextSlide, 3000);
+
+    document.querySelectorAll('.slide img').forEach((img) => {
+        img.addEventListener('click', () => {
+            clearInterval(slideInterval);
+            fullscreenImage.src = img.src;
+            fullscreen.style.display = 'flex';
+        });
+    });
+
+    close.addEventListener('click', () => {
+        fullscreen.style.display = 'none';
+        slideInterval = setInterval(nextSlide, 3000);
+    });
+
+    fullscreen.addEventListener('click', () => {
+        fullscreen.style.display = 'none';
+        slideInterval = setInterval(nextSlide, 3000);
+    });
+
+    nextButton.addEventListener('click', () => {
+        clearInterval(slideInterval);
+        nextSlide();
+    });
+
+    prevButton.addEventListener('click', () => {
+        clearInterval(slideInterval);
+        prevSlide();
+    });
     </script>
 </body>
 </html>
